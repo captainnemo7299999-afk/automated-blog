@@ -3,38 +3,43 @@ from google import genai
 import os
 from datetime import datetime
 
-# 1. Initialize the Brain
-# The new SDK automatically grabs the GEMINI_API_KEY environment variable
+# Initialize the Brain
 client = genai.Client()
 
-# 2. The Data Source (Placeholder feed)
-RSS_FEED_URL = "https://techcrunch.com/feed/"
+# UPGRADE 1: The Target
+# Shifting away from general tech to Global Finance & FinTech. 
+# This keeps us out of the standard aggregator echo chambers.
+RSS_FEED_URL = "https://techcrunch.com/category/fintech/feed/"
 
 def fetch_news():
     print(f"📡 Fetching raw data from {RSS_FEED_URL}...")
     feed = feedparser.parse(RSS_FEED_URL)
     articles = []
     
-    # Grab the top 3 latest articles
     for entry in feed.entries[:3]:
-        articles.append(f"Title: {entry.title}\nSummary: {entry.get('summary', '')}\nLink: {entry.link}\n")
+        articles.append(f"Title: {entry.title}\nSummary: {entry.get('summary', '')}\n")
     return "\n".join(articles)
 
 def generate_blog_post(news_context):
-    print("🧠 Sending to Gemini for synthesis...")
+    print("🧠 Sending to Gemini for synthesis and image generation...")
+    
+    # UPGRADE 2 & 3: The Voice and The Images
     prompt = f"""
-    You are the lead editor of a modern, insightful blog. 
-    Read the following three news snippets. Write a 400-word blog post synthesizing this information into one cohesive narrative. 
-    Explain why this news matters to the average reader. 
-    Maintain a conversational, engaging tone.
-    Format the output in clean Markdown.
+    You are a sharp, insightful financial technology analyst. 
+    Read the following three news snippets. Write a 400-word blog post synthesizing this information into one cohesive narrative. Focus on global finance, digital economies, and shifting markets.
+    Maintain a sophisticated, analytical, yet accessible tone.
+    
+    CRUCIAL FORMATTING INSTRUCTIONS:
+    1. First, think of a 5-word visual description of the core theme of your article (e.g., global-finance-digital-money-future).
+    2. Start your response with this exact markdown image tag, replacing the ALL CAPS section with your 5-word description separated by hyphens:
+       ![Article Header Image](https://image.pollinations.ai/prompt/YOUR-FIVE-WORD-DESCRIPTION-HERE?width=800&height=400&nologo=true)
+    3. Below the image, write your article in clean Markdown.
     
     Raw News Snippets:
     {news_context}
     """
     
     try:
-        # Using the new SDK syntax
         response = client.models.generate_content(
             model='gemini-2.5-flash',
             contents=prompt
@@ -54,12 +59,11 @@ def save_post(content):
     
     os.makedirs("_posts", exist_ok=True)
     
-    # Adds the YAML frontmatter required by GitHub Pages to turn this into a web page
-    frontmatter = f"---\nlayout: post\ntitle: \"Today's Automated Briefing\"\ndate: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n---\n\n"
+    frontmatter = f"---\nlayout: post\ntitle: \"Market Shift: Today's Financial Tech Briefing\"\ndate: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n---\n\n"
     
     with open(filename, 'w', encoding='utf-8') as f:
         f.write(frontmatter + content)
-    print(f"✅ Success! File saved to {filename}")
+    print(f"✅ Success! V2.0 File saved to {filename}")
 
 if __name__ == "__main__":
     news = fetch_news()
