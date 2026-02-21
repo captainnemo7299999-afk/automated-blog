@@ -43,7 +43,7 @@ def generate_blog_post(news_context):
         safe_prompt = urllib.parse.quote("abstract highly detailed digital global finance economy technology")
         random_seed = random.randint(1, 100000)
         image_url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=800&height=400&nologo=true&seed={random_seed}"
-        image_markdown = f"![Article Header Image]({image_url})\n\n"
+        image_markdown = f'<img src="{image_url}" alt="Financial Header Image" style="width:100%; border-radius:8px; margin-bottom:20px;">\n\n'
         
         return image_markdown + response.text
         
@@ -71,3 +71,4 @@ if __name__ == "__main__":
     news = fetch_news()
     blog_content = generate_blog_post(news)
     save_post(blog_content)
+
