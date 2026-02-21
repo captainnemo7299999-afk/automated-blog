@@ -39,7 +39,7 @@ def generate_blog_post(news_context):
         # UPGRADE 4.0: The Cache-Buster Image Test
         # Using Picsum to guarantee it bypasses all browser ad-blockers
         random_seed = random.randint(1, 10000)
-        image_url = f"https://picsum.photos/seed/{random_seed}/800/400"
+        image_url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=800&height=400&nologo=true&seed={random_seed}"
         
         # If this works, the broken icon will be replaced with a real photo
         image_html = f'<img src="{image_url}" alt="System Check Image" style="width:100%; border-radius:8px; margin-bottom:20px;">\n\n'
@@ -73,3 +73,4 @@ if __name__ == "__main__":
     news = fetch_news()
     blog_content = generate_blog_post(news)
     save_post(blog_content)
+
