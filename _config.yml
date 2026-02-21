@@ -2,3 +2,5 @@ title: "The Daily Brief"
 description: "Navigating the Global Digital Economy"
 theme: jekyll-theme-slate
 future: true
+plugins:
+  - jekyll-sitemap
