@@ -2,13 +2,12 @@ import feedparser
 from google import genai
 import os
 from datetime import datetime
+import urllib.parse
+import random
 
 # Initialize the Brain
 client = genai.Client()
 
-# UPGRADE 1: The Target
-# Shifting away from general tech to Global Finance & FinTech. 
-# This keeps us out of the standard aggregator echo chambers.
 RSS_FEED_URL = "https://techcrunch.com/category/fintech/feed/"
 
 def fetch_news():
@@ -21,19 +20,13 @@ def fetch_news():
     return "\n".join(articles)
 
 def generate_blog_post(news_context):
-    print("🧠 Sending to Gemini for synthesis and image generation...")
+    print("🧠 Sending to Gemini for synthesis...")
     
-    # UPGRADE 2 & 3: The Voice and The Images
     prompt = f"""
     You are a sharp, insightful financial technology analyst. 
     Read the following three news snippets. Write a 400-word blog post synthesizing this information into one cohesive narrative. Focus on global finance, digital economies, and shifting markets.
     Maintain a sophisticated, analytical, yet accessible tone.
-    
-    CRUCIAL FORMATTING INSTRUCTIONS:
-    1. First, think of a 5-word visual description of the core theme of your article (e.g., global-finance-digital-money-future).
-    2. Start your response with this exact markdown image tag, replacing the ALL CAPS section with your 5-word description separated by hyphens:
-       ![Article Header Image](https://image.pollinations.ai/prompt/YOUR-FIVE-WORD-DESCRIPTION-HERE?width=800&height=400&nologo=true)
-    3. Below the image, write your article in clean Markdown.
+    Write the article in clean Markdown. Do NOT include an image tag, I will handle that.
     
     Raw News Snippets:
     {news_context}
@@ -44,7 +37,16 @@ def generate_blog_post(news_context):
             model='gemini-2.5-flash',
             contents=prompt
         )
-        return response.text
+        
+        # UPGRADE 3.1: Python handles the image link safely so it never breaks
+        # We add a random seed so Pollinations gives a fresh image every single day
+        safe_prompt = urllib.parse.quote("abstract highly detailed digital global finance economy technology")
+        random_seed = random.randint(1, 100000)
+        image_url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=800&height=400&nologo=true&seed={random_seed}"
+        image_markdown = f"![Article Header Image]({image_url})\n\n"
+        
+        return image_markdown + response.text
+        
     except Exception as e:
         print(f"⚠️ API Error: {e}")
         return None
@@ -60,12 +62,12 @@ def save_post(content):
     os.makedirs("_posts", exist_ok=True)
     
     frontmatter = f"---\nlayout: default\ntitle: \"Market Shift: Today's Financial Tech Briefing\"\ndate: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n---\n\n"
+    
     with open(filename, 'w', encoding='utf-8') as f:
         f.write(frontmatter + content)
-    print(f"✅ Success! V2.0 File saved to {filename}")
+    print(f"✅ Success! V2.1 File saved to {filename}")
 
 if __name__ == "__main__":
     news = fetch_news()
     blog_content = generate_blog_post(news)
     save_post(blog_content)
-
