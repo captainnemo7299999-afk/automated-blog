@@ -3,7 +3,7 @@ name: Daily Auto Blog
 on:
   schedule:
     # Runs at minute 0 past every 2nd hour
-    - cron: '0 */2 * * *'
+    - cron: '17 */2 * * *'
   workflow_dispatch:
 
 jobs:
