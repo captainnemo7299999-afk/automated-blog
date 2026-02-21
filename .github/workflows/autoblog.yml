@@ -2,17 +2,15 @@ name: Daily Auto Blog
 
 on:
   schedule:
-    # This runs at 02:30 UTC every day (which is exactly 8:00 AM IST)
-    - cron: '30 2 * * *'
-  workflow_dispatch: # This adds a button so you can run it manually anytime!
+    # Runs at minute 0 past every 2nd hour
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
 
 jobs:
   build_and_publish:
     runs-on: ubuntu-latest
-
     permissions:
-      contents: write # Allows the bot to push the new file to your repo
-
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -37,5 +35,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action Bot"
           git add -A
-          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-published daily briefing"
+          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-published bi-hourly briefing"
           git push
