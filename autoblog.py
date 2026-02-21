@@ -59,8 +59,7 @@ def save_post(content):
     
     os.makedirs("_posts", exist_ok=True)
     
-    frontmatter = f"---\nlayout: post\ntitle: \"Market Shift: Today's Financial Tech Briefing\"\ndate: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n---\n\n"
-    
+    frontmatter = f"---\nlayout: default\ntitle: \"Market Shift: Today's Financial Tech Briefing\"\ndate: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n---\n\n"
     with open(filename, 'w', encoding='utf-8') as f:
         f.write(frontmatter + content)
     print(f"✅ Success! V2.0 File saved to {filename}")
@@ -69,3 +68,4 @@ if __name__ == "__main__":
     news = fetch_news()
     blog_content = generate_blog_post(news)
     save_post(blog_content)
+
