@@ -4,4 +4,5 @@ theme: jekyll-theme-slate
 future: true
 plugins:
   - jekyll-sitemap
-google_analytics: G-9410FRPL6C
+
+
